@@ -1,0 +1,21 @@
+{
+  "name": "dotify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.2.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "query-string": "^8.1.0",
+    "save-dev": "^0.0.1-security"
+  },
+  "type": "module"
+}
