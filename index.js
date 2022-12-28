@@ -36,14 +36,12 @@ const queryParams = queryString.stringify({
   scope: scope
 })
 
-app.get('/search', (req, res) => {
+app.get('/search/:searchTerms', (req, res) => {
     const mediaTypes = "artist,track,album,show";
     console.log('search params', req.params.searchTerms)
-    res.send('howdy')
-
     // axios({
     //     method: 'get',
-    //     url: `https://api.spotify.com/v1/search?type=${mediaTypes}&q=${req.params.searchParams}`,
+    //     url: `https://api.spotify.com/v1/search?type=${mediaTypes}&q=${req.params.searchTerms}`,
     //     headers: {
     //         'content-type': req.headers['Content-Type'],
     //         Authorization: req.headers['Authorization'],

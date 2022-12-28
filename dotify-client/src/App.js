@@ -24,7 +24,8 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <p>Hi</p>
+      {/* <header className="App-header">
         {!token ? (
           <a
           className="login-anchor"
@@ -42,7 +43,7 @@ function App() {
       </header>
       <main>
         <Form />
-      </main>
+      </main> */}
     </div>
   );
 }
