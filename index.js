@@ -11,6 +11,7 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const stateKey = 'spotify_auth_state';
 
+//storing access Token locally so can be reused for all requests/queries
 
 const generateRandomString = length => {
   let text = '';
@@ -21,9 +22,9 @@ const generateRandomString = length => {
   return text;
 };
 
-app.get('/', (req, res) => {
-    res.json('hello');
-});
+// app.get('/', (req, res) => {
+//     res.json('hello');
+// });
 
 app.get('/login', (req, res) => {
   const state = generateRandomString(16);
@@ -37,6 +38,10 @@ const queryParams = queryString.stringify({
   redirect_uri: REDIRECT_URI,
   state: state,
   scope: scope
+})
+
+app.get('/search/:searchParams', (req, res) => {
+
 })
 
 app.get('/callback', (req, res) => {
@@ -57,18 +62,17 @@ app.get('/callback', (req, res) => {
     })
         .then(response => {
             if(response.status === 200) {
-                const {access_token, token_type } = response.data;
-
-                axios.get('https://api.spotify.com/v1/me', {
-                    headers: {
-                        Authorization: `${token_type} ${access_token}`
-                    }
+                const {access_token, refresh_token } = response.data;
+                //redirect to react app
+                //pass along tokens in query params
+                const queryParams  = queryString.stringify({
+                    access_token,
+                    refresh_token
                 })
-                .then(response => {
-                    res.send(`<pre>${JSON.stringify(response.data, null, 2)}</pre>`)
-                })
+                res.redirect(`http://localhost:3000/?${queryParams}`)
+              
             } else {
-                res.send(response);
+                res.redirect(`/?${queryString.stringify({ error: 'invalid token' })}`);
             }
         })
         .catch(error => {
