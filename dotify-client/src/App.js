@@ -1,38 +1,48 @@
 import logo from './logo.svg';
 import './App.css';
-import { useEffect } from 'react';
+import { useEffect, useState, Fragment } from 'react';
+import { accessToken, logout, triggerSearch } from './spotify';
+import Form from './Form';
 
 function App() {
-
+  const [token, setToken] = useState(null);
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchTerms, setSearchTerms] = useState("")
+  
   useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const accessToken = urlParams.get('access_token');
-    const refreshToken = urlParams.get('refresh_token')
-    
-    if(refreshToken) {
-      fetch(`/refresh_token?refresh_token=${refreshToken}`)
-        // .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(err => console.log(err))
-    }
+    setToken(accessToken);
   }, [])
+
+  // useEffect(() => {
+  //   triggerSearch(searchTerms)
+  //     .then(results => setSearchResults(results))
+  // }, [searchTerms])
+
+  // const search = (searchTerms) => {
+  //  setSearchTerms(searchTerms);
+  // }
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
+        {!token ? (
+          <a
+          className="login-anchor"
           href="http://localhost:8888/login"
-          target="_blank"
           rel="noopener noreferrer"
         >
-         Log in to Spotify!
+        Log in to Spotify!
         </a>
+        ) : (
+        <Fragment>
+          <h1>You are logged in!</h1>
+          <button onClick={logout}>Log out</button>
+        </Fragment>
+        )}
       </header>
+      <main>
+        <Form />
+      </main>
     </div>
   );
 }
