@@ -11,13 +11,15 @@ const Form = ({ search }) => {
     };
 
     return (
-        <form>
-            <input 
-                type="text" name="search" onChange={(e) => handleChange(e) }
-                value={ searchEntry } placeholder="Search for your favorite albums, songs, artists, etc."
-            >
-            </input>
-            <button type="button">🔍</button>
+        <form className="form">
+            <div className="form-box">
+                <input 
+                    type="text" name="search" onChange={(e) => handleChange(e) }
+                    value={ searchEntry } placeholder="Search for your favorites here!"
+                >
+                </input>
+                <button type="button">🔍</button>
+            </div>
         </form>
     )
 };

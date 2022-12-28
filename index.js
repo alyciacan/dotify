@@ -2,6 +2,7 @@ import express from 'express';
 import * as dotenv from 'dotenv';
 import queryString from 'query-string';
 import axios, * as others from 'axios';
+import cors from 'cors';
 dotenv.config();
 
 const port = 8888;
@@ -22,6 +23,22 @@ const generateRandomString = length => {
   return text;
 };
 
+const serialize = function(obj) {
+    var str = [];
+    for (var p in obj) {
+        if (obj.hasOwnProperty(p)) {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+    }
+    return str.join("&");
+}
+
+app.use(cors());
+// app.get('/', (req, res) => {
+//     res.send('hi!')
+// }
+// )
+
 app.get('/login', (req, res) => {
   const state = generateRandomString(16);
   res.cookie(stateKey, state);
@@ -35,29 +52,25 @@ const queryParams = queryString.stringify({
   state: state,
   scope: scope
 })
+res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
+
+});
 
 app.get('/search/:searchTerms', (req, res) => {
-    const mediaTypes = "artist,track,album,show";
-    console.log('search params', req.params.searchTerms)
-    // axios({
-    //     method: 'get',
-    //     url: `https://api.spotify.com/v1/search?type=${mediaTypes}&q=${req.params.searchTerms}`,
-    //     headers: {
-    //         'content-type': req.headers['Content-Type'],
-    //         Authorization: req.headers['Authorization'],
-    //     },
-    // })
-    //     .then(response => {
-    //         if(response.status === 200) {
-    //             console.log(response.json())
-    //         } else {
-    //             console.log("ERROR")                
-    //         }
-    //     })
-    //     .catch(error => {
-    //         res.send(error);
-    //     })
-})
+   const data = {
+    grant_type: "client_credentials"
+   }
+    axios.post('https://accounts.spotify.com/api/token', queryString.stringify({
+        headers: {
+            'Authorization': 'Basic ' + (Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
+        },
+        params: data,
+        json: true
+        }))
+    .then(response => response.json)
+    .then(response => console.log(response.status))
+    
+});
 
 app.get('/callback', (req, res) => {
     const code = req.query.code || null; //
@@ -77,13 +90,11 @@ app.get('/callback', (req, res) => {
     })
         .then(response => {
             if(response.status === 200) {
-                const {access_token, refresh_token, expires_in } = response.data;
-                //redirect to react app
-                //pass along tokens in query params
+                const {access_token, refresh_token} = response.data;
+
                 const queryParams  = queryString.stringify({
                     access_token,
-                    refresh_token,
-                    expires_in
+                    refresh_token
                 })
                 res.redirect(`http://localhost:3000/?${queryParams}`)
               
@@ -95,9 +106,6 @@ app.get('/callback', (req, res) => {
         .catch(error => {
             res.send(error);
         })
-})
-
-  res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 });
 
 app.get('/refresh_token', (req, res) => {
@@ -121,8 +129,8 @@ app.get('/refresh_token', (req, res) => {
     .catch(error => {
         res.send(error);
     })
-})
+});
 
 app.listen(port, () => {
     console.log(`Express app now listening at http://localhost:${port}`)
-})
+});

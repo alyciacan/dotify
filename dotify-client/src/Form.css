@@ -1,0 +1,23 @@
+.form {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-box {
+    background-color: white;
+    width: 40vw;
+    height: 20vh;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input {
+    min-width: 20vw;
+    min-height: 5vh;
+    border-radius: 5px;
+    font-size: 150%;
+}
