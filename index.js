@@ -5,6 +5,7 @@ import axios, * as others from 'axios';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 dotenv.config();
+import cleanData from './utils/cleaning-fn.js';
 
 const port = 8888;
 const app = express();
@@ -18,7 +19,6 @@ app.use(cors({
     credentials: true
 }));
 
-//storing access Token locally so can be reused for all requests/queries
 
 const generateRandomString = length => {
   let text = '';
@@ -48,7 +48,6 @@ res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 
 app.get('/search/:searchTerms', (req, res) => {
     const mediaTypes = 'track,album,artist,show'
-    console.log(req.cookies)
     axios({
         method: 'get',
         url: `https://api.spotify.com/v1/search?type=${mediaTypes}&q=${req.params.searchTerms}`,
@@ -57,7 +56,9 @@ app.get('/search/:searchTerms', (req, res) => {
     })
         .then(response => {
             if(response.status === 200) {
-               res.json(response.data)
+                const cleanedData = cleanData(response.data)
+                console.log(cleanedData)
+               res.json(cleanedData)
             } else {
                 res.redirect(`/?${queryString.stringify({ error: 'invalid token' })}`);
             }
@@ -92,7 +93,6 @@ app.get('/callback', (req, res) => {
               
             } else {
                 res.redirect(`/?${queryString.stringify({ error: 'invalid token' })}`);
-                
             }
         })
         .catch(error => {

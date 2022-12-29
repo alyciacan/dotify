@@ -1,5 +1,5 @@
 const cleanData = (dataObj) => {
-    return Object.keys(dataObj).reduce((newObj, currKey) => {
+     return Object.keys(dataObj).reduce((newObj, currKey) => {
       newObj[currKey] = []
       dataObj[currKey].items.forEach(item => {
         if(item.type === "album") {

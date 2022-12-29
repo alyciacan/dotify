@@ -18,5 +18,6 @@ export const triggerSearch = (searchTerms) => {
     axios.get(`http://localhost:8888/search/${searchTerms}`, {
         withCredentials: true
     })
-        .then(response => console.log(response))
+        .then(response => console.log(response.data))
+    
 };
