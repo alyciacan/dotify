@@ -13,7 +13,10 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const stateKey = 'spotify_auth_state';
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 
 //storing access Token locally so can be reused for all requests/queries
 
@@ -26,15 +29,6 @@ const generateRandomString = length => {
   return text;
 };
 
-// const getCookie = (cookiesString) => {
-//     console.log(cookiesString)
-//     return cookiesString.split('; ')[1].split('=')[1]
-// };
-
-// app.get('/', (req, res) => {
-//     res.send('hi!')
-// }
-// )
 
 app.get('/login', (req, res) => {
   const state = generateRandomString(16);
@@ -54,7 +48,7 @@ res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 
 app.get('/search/:searchTerms', (req, res) => {
     const mediaTypes = 'track,album,artist,show'
-    console.log(req.cookies['access-token'])
+    console.log(req.cookies)
     axios({
         method: 'get',
         url: `https://api.spotify.com/v1/search?type=${mediaTypes}&q=${req.params.searchTerms}`,
