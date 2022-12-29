@@ -8,9 +8,7 @@ button:hover {
   cursor: pointer;
 }
 
-.login-anchor {
-  all: unset;
-}
+
 
 .login-anchor:hover {
   cursor: pointer;

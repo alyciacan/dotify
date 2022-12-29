@@ -23,15 +23,9 @@ const generateRandomString = length => {
   return text;
 };
 
-const serialize = function(obj) {
-    var str = [];
-    for (var p in obj) {
-        if (obj.hasOwnProperty(p)) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-        }
-    }
-    return str.join("&");
-}
+const getCookie = () => {
+
+};
 
 app.use(cors());
 // app.get('/', (req, res) => {
@@ -53,23 +47,18 @@ const queryParams = queryString.stringify({
   scope: scope
 })
 res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
-
 });
 
 app.get('/search/:searchTerms', (req, res) => {
-   const data = {
-    grant_type: "client_credentials"
-   }
-    axios.post('https://accounts.spotify.com/api/token', queryString.stringify({
-        headers: {
-            'Authorization': 'Basic ' + (Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
-        },
-        params: data,
-        json: true
-        }))
-    .then(response => response.json)
-    .then(response => console.log(response.status))
-    
+    const mediaTypes = 'track,album,artist,show'
+    console.log(req.headers.cookie)
+    axios({
+        method: 'get',
+        url: `https://api.spotify.com/v1/search?type=${mediaTypes}&q=${req.params.searchTerms}`,
+        headers: { 'Authorization': `Bearer ${ req.headers.cookie }`},
+        'Content-Type': 'application/json',
+    })
+        .then(response => res.send(response.data))  
 });
 
 app.get('/callback', (req, res) => {
@@ -90,13 +79,10 @@ app.get('/callback', (req, res) => {
     })
         .then(response => {
             if(response.status === 200) {
-                const {access_token, refresh_token} = response.data;
+                const {access_token} = response.data;
 
-                const queryParams  = queryString.stringify({
-                    access_token,
-                    refresh_token
-                })
-                res.redirect(`http://localhost:3000/?${queryParams}`)
+                res.cookie('access-token', access_token)
+                res.redirect(`http://localhost:3000`)
               
             } else {
                 res.redirect(`/?${queryString.stringify({ error: 'invalid token' })}`);

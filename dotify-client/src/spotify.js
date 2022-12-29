@@ -6,7 +6,7 @@ const logout = () => {
     window.location = window.location.origin;
 }
 
-const getAccessToken = () => {
+export const getAccessToken = () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const queryParams = {
@@ -19,20 +19,7 @@ const getAccessToken = () => {
 export const accessToken = getAccessToken();
 export { logout }; 
 
-export const getInitialAccessToken = () => {
-    axios({
-        method: 'get',
-        url: 'http://localhost:8888/gettoken',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-        }
-    })
-    .then(response => console.log(response))
-};
-
 export const triggerSearch = (searchTerms) => {
-    console.log('access token', accessToken)
     axios({
         method: "get",
         url: `http://localhost:8888/search/${searchTerms}`,

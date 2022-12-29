@@ -2,7 +2,7 @@ import './Form.css'
 import { useState } from 'react';
 import {triggerSearch} from './spotify';
 
-const Form = ({ search }) => {
+const Form = () => {
     const [searchEntry, setSearchEntry] = useState("");
 
     const handleChange = (e) => {
