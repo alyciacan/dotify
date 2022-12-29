@@ -87,9 +87,12 @@ app.get('/callback', (req, res) => {
         .then(response => {
             if(response.status === 200) {
                 const {access_token} = response.data;
+                const queryParams = queryString.stringify({
+                    access_token
+                })
 
                 res.cookie('access-token', access_token)
-                res.redirect(`http://localhost:3000`)
+                res.redirect(`http://localhost:3000/?${access_token}`)
               
             } else {
                 res.redirect(`/?${queryString.stringify({ error: 'invalid token' })}`);

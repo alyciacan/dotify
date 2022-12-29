@@ -1,4 +1,5 @@
 const cleanData = (dataObj) => {
+  console.log(Object.keys(dataObj))
      return Object.keys(dataObj).reduce((newObj, currKey) => {
       newObj[currKey] = []
       dataObj[currKey].items.forEach(item => {

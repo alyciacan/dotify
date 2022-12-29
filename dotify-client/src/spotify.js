@@ -7,7 +7,6 @@ export const getAccessToken = () => {
     const urlParams = new URLSearchParams(queryString);
     const queryParams = {
         accessToken: urlParams.get('access_token'),
-        refreshToken: urlParams.get('refresh_token'),
     };
     return queryParams;
 }

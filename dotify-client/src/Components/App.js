@@ -1,10 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
 import { useEffect, useState } from 'react';
-import { getAccessToken, triggerSearch } from './spotify';
+import { getAccessToken } from '../spotify';
 import Form from './Form';
 import Login from './Login';
-import { Route, Switch } from 'react-router-dom';
 
 function App() {
   const [searchResults, setSearchResults] = useState(null);
@@ -18,10 +16,6 @@ function App() {
 
   const logout = () => {
     setToken("");
-  }
-
-  const search = () => {
-
   }
 
   console.log(token)
