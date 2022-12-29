@@ -56,9 +56,9 @@ app.get('/search/:searchTerms', (req, res) => {
     })
         .then(response => {
             if(response.status === 200) {
-                const cleanedData = cleanData(response.data)
-                console.log(cleanedData)
-               res.json(cleanedData)
+                // const cleanedData = cleanData(response.data)
+                console.log(response.data)
+               res.json(response.data)
             } else {
                 res.redirect(`/?${queryString.stringify({ error: 'invalid token' })}`);
             }
