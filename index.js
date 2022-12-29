@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import queryString from 'query-string';
 import axios, * as others from 'axios';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 const port = 8888;
@@ -11,6 +12,8 @@ const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = process.env.REDIRECT_URI;
 const stateKey = 'spotify_auth_state';
+app.use(cookieParser());
+app.use(cors());
 
 //storing access Token locally so can be reused for all requests/queries
 
@@ -23,11 +26,11 @@ const generateRandomString = length => {
   return text;
 };
 
-const getCookie = () => {
+// const getCookie = (cookiesString) => {
+//     console.log(cookiesString)
+//     return cookiesString.split('; ')[1].split('=')[1]
+// };
 
-};
-
-app.use(cors());
 // app.get('/', (req, res) => {
 //     res.send('hi!')
 // }
@@ -51,14 +54,23 @@ res.redirect(`https://accounts.spotify.com/authorize?${queryParams}`);
 
 app.get('/search/:searchTerms', (req, res) => {
     const mediaTypes = 'track,album,artist,show'
-    console.log(req.headers.cookie)
+    console.log(req.cookies['access-token'])
     axios({
         method: 'get',
         url: `https://api.spotify.com/v1/search?type=${mediaTypes}&q=${req.params.searchTerms}`,
-        headers: { 'Authorization': `Bearer ${ req.headers.cookie }`},
+        headers: { 'Authorization': `Bearer ${ req.cookies['access-token']}`},
         'Content-Type': 'application/json',
     })
-        .then(response => res.send(response.data))  
+        .then(response => {
+            if(response.status === 200) {
+               res.json(response.data)
+            } else {
+                res.redirect(`/?${queryString.stringify({ error: 'invalid token' })}`);
+            }
+        }) 
+    .catch(error => {
+        res.send(error);
+    }) 
 });
 
 app.get('/callback', (req, res) => {

@@ -2,10 +2,6 @@ import axios from 'axios';
 
 
 
-const logout = () => {
-    window.location = window.location.origin;
-}
-
 export const getAccessToken = () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -17,17 +13,10 @@ export const getAccessToken = () => {
 }
 
 export const accessToken = getAccessToken();
-export { logout }; 
 
 export const triggerSearch = (searchTerms) => {
-    axios({
-        method: "get",
-        url: `http://localhost:8888/search/${searchTerms}`,
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`
-        // (`/search?${searchTerms}`
-    }
-})
-    .then(resp => console.log(resp))
+    axios.get(`http://localhost:8888/search/${searchTerms}`, {
+        withCredentials: true
+    })
+        .then(response => console.log(response))
 };
